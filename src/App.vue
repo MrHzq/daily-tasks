@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
   <h1>You did it!</h1>
   <p>
@@ -12,6 +10,11 @@
       它可以自动生成给定范围内的随机正整数，可用帮你打乱顺序记东西：比如记英语单词~
     </p>
   </main>
+  <CusSwitch />
 </template>
+
+<script setup lang="ts">
+import CusSwitch from './CusSwitch.vue'
+</script>
 
 <style scoped></style>

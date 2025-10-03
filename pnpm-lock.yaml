@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@headlessui/vue': ^1.7.23
   '@prettier/plugin-oxc': ^0.0.4
   '@tailwindcss/postcss': ^4.1.14
   '@tsconfig/node22': ^22.0.2
@@ -34,6 +35,7 @@ specifiers:
   vue-tsc: ^3.1.0
 
 dependencies:
+  '@headlessui/vue': 1.7.23_vue@3.5.22
   pinia: 3.0.3_sf4q73uatisyuveg3irwv5ooby
   vue: 3.5.22_typescript@5.9.3
   vue-router: 4.5.1_vue@3.5.22
@@ -779,6 +781,16 @@ packages:
       '@eslint/core': 0.15.2
       levn: 0.4.1
     dev: true
+
+  /@headlessui/vue/1.7.23_vue@3.5.22:
+    resolution: {integrity: sha512-JzdCNqurrtuu0YW6QaDtR2PIYCKPUWq28csDyMvN4zmGccmE7lz40Is6hc3LA4HFeCI7sekZ/PQMTNmn9I/4Wg==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      vue: ^3.2.0
+    dependencies:
+      '@tanstack/vue-virtual': 3.13.12_vue@3.5.22
+      vue: 3.5.22_typescript@5.9.3
+    dev: false
 
   /@humanfs/core/0.19.1:
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -1536,6 +1548,19 @@ packages:
       postcss: 8.5.6
       tailwindcss: 4.1.14
     dev: true
+
+  /@tanstack/virtual-core/3.13.12:
+    resolution: {integrity: sha512-1YBOJfRHV4sXUmWsFSf5rQor4Ss82G8dQWLRbnk3GA4jeP8hQt1hxXh0tmflpC0dz3VgEv/1+qwPyLeWkQuPFA==}
+    dev: false
+
+  /@tanstack/vue-virtual/3.13.12_vue@3.5.22:
+    resolution: {integrity: sha512-vhF7kEU9EXWXh+HdAwKJ2m3xaOnTTmgcdXcF2pim8g4GvI7eRrk2YRuV5nUlZnd/NbCIX4/Ja2OZu5EjJL06Ww==}
+    peerDependencies:
+      vue: ^2.7.0 || ^3.0.0
+    dependencies:
+      '@tanstack/virtual-core': 3.13.12
+      vue: 3.5.22_typescript@5.9.3
+    dev: false
 
   /@tsconfig/node22/22.0.2:
     resolution: {integrity: sha512-Kmwj4u8sDRDrMYRoN9FDEcXD8UpBSaPQQ24Gz+Gamqfm7xxn+GBR7ge/Z7pK8OXNGyUzbSwJj+TH6B+DS/epyA==}
