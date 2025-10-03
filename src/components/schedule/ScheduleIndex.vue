@@ -15,9 +15,9 @@
           <div v-for="item in tagList" :key="item.tag" class="flex justify-center items-center">
             <span
               class="inline-block mr-2 w-3 h-3 rounded-full"
-              :class="[tagColorMap[item.tag].bg + '0']"
+              :class="[(tagColorMap[item.tag]?.bg || 'bg-gray-100') + '0']"
             ></span>
-            <span :class="[tagColorMap[item.tag].text]">{{ item.name }}:</span>
+            <span :class="[tagColorMap[item.tag]?.text || 'text-gray-500']">{{ item.name }}:</span>
             <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">{{
               minuteFormat(tagTimeTotal[item.tag] || 0)
             }}</span>
@@ -33,8 +33,8 @@
             :class="[index === currTimeInScheduleIndex ? 'bg-sky-500 text-white' : '']"
             class="p-4 border-b border-gray-200 dark:border-gray-700"
           >
-            <div class="p-4 rounded-lg" :class="[tagColorMap[item.tag].bg]">
-              <div class="font-medium" :class="[tagColorMap[item.tag].text]">
+            <div class="p-4 rounded-lg" :class="[tagColorMap[item.tag]?.bg || 'bg-gray-50']">
+                <div class="font-medium" :class="[tagColorMap[item.tag]?.text || 'text-gray-800']">
                 {{ item.time.join('~') }}
               </div>
               <div
