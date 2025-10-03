@@ -1,9 +1,12 @@
 <template>
-  <div>
+  <div class="box-border overflow-auto relative flex-1 p-4 mx-auto w-full">
     <!-- 日程表容器 -->
     <div class="overflow-hidden bg-white rounded-lg shadow-md">
       <!-- 日程表标题行 -->
-      <div class="px-6 py-4 text-center border-b border-gray-200">
+      <div
+        class="px-6 py-4 text-center border-b border-gray-200"
+        @click="scrollToElement(currTimeInScheduleIndex)"
+      >
         <h2 class="text-xl font-semibold text-gray-900">
           今天为{{ isHoliday ? '休息日' : '工作日' }}
           {{ dayInfo.name === '工作日' ? '' : '- ' + dayInfo.name }}
@@ -24,9 +27,12 @@
 
       <!-- 日程表内容 -->
       <div class="text-center divide-y divide-gray-200 content dark:divide-gray-700">
-        <!-- 睡觉、起床 -->
-        <template v-for="item in currScheduleList" :key="item.name">
-          <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+        <template v-for="(item, index) in currScheduleList" :key="item.name">
+          <div
+            :id="`${index}`"
+            :class="[index === currTimeInScheduleIndex ? 'bg-sky-500 text-white' : '']"
+            class="p-4 border-b border-gray-200 dark:border-gray-700"
+          >
             <div class="p-4 rounded-lg" :class="[tagColorMap[item.tag].bg]">
               <div class="font-medium" :class="[tagColorMap[item.tag].text]">
                 {{ item.time.join('~') }}
@@ -49,39 +55,51 @@
         </template>
       </div>
     </div>
+
+    <!-- 悬浮定位按钮 -->
+    <div class="bottom-[50%] right-4 position" @click="scrollToElement(currTimeInScheduleIndex)">
+      <div
+        class="flex justify-center items-center p-2 w-10 h-10 text-white bg-sky-500 rounded-full shadow-lg"
+      >
+        <div class="w-4 h-4 bg-white rounded-full"></div>
+      </div>
+    </div>
   </div>
 </template>
 
-<script setup lang="ts">
-import { computed } from 'vue'
-
-interface ScheduleItem {
+<script lang="ts">
+export interface ScheduleItem {
   time: [string, string]
-  name: string
+  name: string | string[]
   tag: string
   belong: string
 }
+</script>
+
+<script setup lang="ts">
+import { computed, onMounted } from 'vue'
 
 const props = defineProps<{
-  scheduleList: ScheduleItem[]
+  currTime: string
   isHoliday: boolean
-  dayInfo: {
-    date: string
-    name: string
-  }
+  scheduleList: ScheduleItem[]
+  dayInfo: { date: string; name: string }
 }>()
 
+// 筛选当前日程列表（根据是否为假日和是否为工作日）
 const currScheduleList = computed(() => {
   return props.scheduleList.filter(
     (item) => item.belong === (props.isHoliday ? 'holiday' : 'workday') || item.belong === 'both',
   )
 })
 
-console.log(
-  '%c [ currScheduleList.value ]',
-  'font-size:13px; background:#d2b5ba; color:#fff9fe;',
-  currScheduleList.value,
-)
+// 判断当前 currTime 处于 currScheduleList 的哪一个时间内，返回索引
+const currTimeInScheduleIndex = computed(() => {
+  return currScheduleList.value.findIndex((item) => {
+    const [startTime, endTime] = item.time
+    return props.currTime >= startTime && props.currTime <= endTime
+  })
+})
 
 // 计算时间差（处理跨天情况）
 const calculateTimeDifference = (times: [string, string]) => {
@@ -102,15 +120,9 @@ const calculateTimeDifference = (times: [string, string]) => {
     diffMinutes += 24 * 60 // 如果结束时间早于开始时间，加上24小时的分钟数
   }
   return diffMinutes
-
-  // // 转换为小时和分钟
-  // const hours = Math.floor(diffMinutes / 60)
-  // const minutes = diffMinutes % 60
-
-  // // 格式化结果
-  // return `${hours}小时` + (minutes ? `${minutes}分钟` : '')
 }
 
+// 格式化分钟为小时分钟格式
 const minuteFormat = (minute: number) => {
   // 转换为小时和分钟
   const hours = Math.floor(minute / 60)
@@ -145,6 +157,18 @@ const tagTimeTotal = computed(() => {
     },
     {} as Record<keyof typeof tagColorMap, number>,
   )
+})
+
+// 滚动到指定元素
+const scrollToElement = (index: number) => {
+  const element = document.getElementById(index.toString())
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+
+onMounted(() => {
+  scrollToElement(currTimeInScheduleIndex.value)
 })
 </script>
 
