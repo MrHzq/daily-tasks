@@ -15,6 +15,8 @@
   <ArrowDownCircleIcon class="w-6 h-6" />
 
   <ChatBubbleBottomCenterIcon class="w-16 h-16" />
+
+  <el-button type="primary">主要按钮</el-button>
 </template>
 
 <script setup lang="ts">
