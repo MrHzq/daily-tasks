@@ -1,23 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import routes from './routes'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/home',
-      redirect: '/',
-    },
-    {
-      path: '/',
-      name: 'home',
-      component: () => import('@/views/home/HomeIndex.vue'),
-    },
-    {
-      path: '/daily',
-      name: 'daily',
-      component: () => import('@/views/daily/DailyIndex.vue'),
-    },
-  ],
+  routes,
 })
 
 export default router
