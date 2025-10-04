@@ -14,6 +14,11 @@ export default [
     component: () => import('@/views/daily/DailyIndex.vue'),
   },
   {
+    path: '/schedule',
+    name: 'Schedule',
+    component: () => import('@/views/schedule/ScheduleIndex.vue'),
+  },
+  {
     path: '/tag',
     name: 'Tag',
     component: () => import('@/views/tag/TagIndex.vue'),
