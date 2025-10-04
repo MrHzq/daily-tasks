@@ -13,4 +13,9 @@ export default [
     name: 'Daily',
     component: () => import('@/views/daily/DailyIndex.vue'),
   },
+  {
+    path: '/tag',
+    name: 'Tag',
+    component: () => import('@/views/tag/TagIndex.vue'),
+  },
 ]
