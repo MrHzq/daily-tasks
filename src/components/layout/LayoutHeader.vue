@@ -8,10 +8,15 @@
         <p class="text-xl font-bold text-center text-gray-800">Daily Tasks</p>
       </div>
     </div>
+    <div class="right">
+      <MenuIndex />
+    </div>
   </header>
 </template>
 
 <script setup lang="ts">
+import MenuIndex from '../menu/MenuIndex.vue'
+
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
