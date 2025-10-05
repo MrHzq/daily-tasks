@@ -424,8 +424,8 @@ const openAddDialog = () => {
     id: '',
     time: ['', ''],
     name: '',
-    tag: tags.value[0]?.name,
-    belong: belongList[0],
+    tag: tags.value[0]?.name || '',
+    belong: belongList[0] || '',
   }
 
   showDialog.value = true
