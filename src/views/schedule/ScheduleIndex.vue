@@ -28,7 +28,7 @@
     </div>
 
     <!-- 筛选和搜索 -->
-    <div class="flex flex-col gap-2 sm:flex-row">
+    <div class="flex flex-col gap-2">
       <div class="relative flex-1">
         <input
           v-model="searchQuery"
@@ -67,7 +67,7 @@
             :class="[tagColorMap[schedule.tag]?.border]"
             class="p-2 bg-white rounded-xl border-l-4 shadow-md transition-all hover:shadow-lg"
           >
-            <div class="flex flex-col gap-2 justify-between sm:flex-row sm:items-center">
+            <div class="flex flex-col gap-2 justify-between">
               <h4 class="font-semibold">
                 <div
                   v-for="(name, index) in Array.isArray(schedule.name)
