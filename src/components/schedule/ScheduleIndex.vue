@@ -7,7 +7,7 @@
         class="px-6 py-2 text-center border-b border-gray-200"
         @click="scrollToElement(currTimeInScheduleIndex)"
       >
-        <h2 class="text-xl font-semibold text-gray-900">
+        <h2 class="font-semibold text-gray-900">
           今天为{{ isHoliday ? '休息日' : '工作日' }}
           {{ dayInfo.name === '工作日' ? '' : '- ' + dayInfo.name }}
         </h2>
