@@ -2,7 +2,7 @@
 export interface Schedule {
   id: string
   time: [string, string]
-  name: string
+  name: string | string[]
   tag: string | undefined
   belong: string | undefined
 }

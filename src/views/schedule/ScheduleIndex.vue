@@ -65,19 +65,33 @@
             v-for="schedule in filteredSchedules"
             :key="schedule.id"
             class="p-2 bg-white rounded-xl border-l-4 shadow-md transition-all hover:shadow-lg"
-            :class="[tagColorMap[schedule.tag]?.border]"
+            :class="[schedule.tag ? tagColorMap[schedule.tag]?.border : '']"
           >
             <div class="flex flex-col gap-2 justify-between sm:flex-row sm:items-center">
-              <h3 class="text-xl font-semibold">{{ schedule.name }}</h3>
+              <h3 class="text-xl font-semibold">
+                <div
+                  v-for="(name, index) in Array.isArray(schedule.name)
+                    ? schedule.name
+                    : [schedule.name]"
+                  :key="name"
+                >
+                  <template v-if="Array.isArray(schedule.name) ? schedule.name.length > 1 : false">
+                    {{ index + 1 }}、
+                  </template>
+                  {{ name }}
+                </div>
+              </h3>
               <div class="flex items-center text-gray-500 dark:text-gray-400">
-                <span>{{ schedule.time[0] }} - {{ schedule.time[1] }}</span>
+                <span> {{ schedule.time.join('~') }}</span>
               </div>
 
               <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-2">
                   <span
                     class="px-3 py-1 text-sm rounded-full"
-                    :class="[(tagColorMap[schedule.tag]?.bg || 'bg-gray-10') + '0']"
+                    :class="[
+                      ((schedule.tag ? tagColorMap[schedule.tag]?.bg : '') || 'bg-gray-10') + '0',
+                    ]"
                   >
                     {{ schedule.tag }}
                   </span>
@@ -372,7 +386,9 @@ const filterBelong = ref('')
 const filteredSchedules = computed<Schedule[]>(() => {
   return schedules.value
     .filter((schedule) => {
-      const matchesSearch = schedule.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      const matchesSearch = Array.isArray(schedule.name)
+        ? schedule.name.some((name) => name.toLowerCase().includes(searchQuery.value.toLowerCase()))
+        : schedule.name.toLowerCase().includes(searchQuery.value.toLowerCase())
       const matchesTag = !filterTag.value || schedule.tag === filterTag.value
       const matchesBelong = !filterBelong.value || schedule.belong === filterBelong.value
 
@@ -450,7 +466,7 @@ const saveSchedule = () => {
     // 新增
     const newSchedule: Schedule = {
       ...currentSchedule.value,
-      id: Date.now().toString(),
+      id: Math.random().toString(36).substring(2),
     }
     schedules.value.push(newSchedule)
     showNotification('添加成功', '新日程已成功添加', 'success')

@@ -232,7 +232,7 @@ const saveTag = () => {
     // 新增
     const newTag: Tag = {
       ...currentTag.value,
-      id: Date.now().toString(),
+      id: Math.random().toString(36).substring(2),
     }
     tags.value.push(newTag)
   }
