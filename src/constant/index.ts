@@ -1,1 +1,1 @@
-export const belongList = ['both', 'workday', 'weekend']
+export const belongList = ['both', 'workday', 'holiday']
