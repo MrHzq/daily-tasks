@@ -27,15 +27,15 @@
       </div>
     </div>
 
-    <!-- 标签列表 -->
+    <!-- 列表 -->
     <div class="flex-1">
       <template v-if="tags.length > 0">
         <div class="flex flex-col gap-4">
           <div
             v-for="tag in tags"
             :key="tag.id"
-            class="flex justify-between items-center p-3 rounded-md transition duration-200"
             :class="[tagColorMap[tag.name]?.bg || 'bg-gray-10']"
+            class="flex justify-between items-center p-3 rounded-md transition duration-200"
           >
             <span class="font-medium text-gray-800">{{ tag.name }}</span>
             <div class="flex space-x-2">
@@ -59,12 +59,12 @@
       <!-- 空状态提示 -->
       <template v-else>
         <div class="flex flex-col justify-center items-center h-full text-center">
-          <h3 class="mb-2 text-xl font-medium">No Tags Found</h3>
+          <h3 class="mb-2 text-xl font-medium">No Found</h3>
         </div>
       </template>
     </div>
 
-    <!-- 新增/编辑标签对话框 -->
+    <!-- 新增/编辑 对话框 -->
     <div
       v-if="showDialog"
       class="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50"
@@ -76,13 +76,13 @@
       >
         <h3 class="mb-4 text-lg font-semibold">{{ isEditing ? 'Edit' : 'Add' }}</h3>
 
-        <form @submit.prevent="saveTag">
+        <form @submit.prevent="saveData">
           <div class="space-y-4">
             <div>
-              <label class="block mb-1 text-sm font-medium" for="tagName">Tag Name</label>
+              <label class="block mb-1 text-sm font-medium" for="name">Tag Name</label>
               <input
                 v-model="currentTag.name"
-                id="tagName"
+                id="name"
                 type="text"
                 class="px-4 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Tag name"
@@ -218,23 +218,23 @@ const closeDialog = () => {
   showDialog.value = false
 }
 
-// 保存标签（新增或编辑）
-const saveTag = () => {
+// 保存（新增或编辑）
+const saveData = () => {
   if (saveButtonDisabled.value) return
 
   if (isEditing.value) {
     // 编辑
-    const index = tags.value.findIndex((t) => t.id === currentTag.value.id)
+    const index = tags.value.findIndex((i) => i.id === currentTag.value.id)
     if (index !== -1) {
       tags.value[index] = { ...currentTag.value }
     }
   } else {
     // 新增
-    const newTag: Tag = {
+    const newData: Tag = {
       ...currentTag.value,
       id: Math.random().toString(36).substring(2),
     }
-    tags.value.push(newTag)
+    tags.value.push(newData)
   }
 
   saveTagsToLocalStorage(tags.value)

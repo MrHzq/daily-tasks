@@ -27,7 +27,7 @@
 
       <!-- 日程表内容 -->
       <div class="text-center divide-y divide-gray-200 content dark:divide-gray-700">
-        <template v-for="(item, index) in currScheduleList" :key="item.name">
+        <template v-for="(item, index) in currSchedules" :key="item.name">
           <div
             :id="`${index}`"
             :class="[index === currTimeInScheduleIndex ? 'bg-sky-500 text-white' : '']"
@@ -72,36 +72,28 @@
   </div>
 </template>
 
-<script lang="ts">
-export interface ScheduleItem {
-  time: [string, string]
-  name: string | string[]
-  tag: string
-  belong: string
-}
-</script>
-
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { tagColorMap } from '@/data/tag'
+import type { Schedule } from '@/data/schedule'
 
 const props = defineProps<{
   currTime: string
   isHoliday: boolean
-  scheduleList: ScheduleItem[]
+  schedules: Schedule[]
   dayInfo: { date: string; name: string }
 }>()
 
 // 筛选当前日程列表（根据是否为假日和是否为工作日）
-const currScheduleList = computed(() => {
-  return props.scheduleList.filter(
+const currSchedules = computed(() => {
+  return props.schedules.filter(
     (item) => item.belong === (props.isHoliday ? 'holiday' : 'workday') || item.belong === 'both',
   )
 })
 
-// 判断当前 currTime 处于 currScheduleList 的哪一个时间内，返回索引
+// 判断当前 currTime 处于 currSchedules 的哪一个时间内，返回索引
 const currTimeInScheduleIndex = computed(() => {
-  return currScheduleList.value.findIndex((item) => {
+  return currSchedules.value.findIndex((item) => {
     const [startTime, endTime] = item.time
     return props.currTime >= startTime && props.currTime <= endTime
   })
@@ -148,7 +140,7 @@ const tagList: Array<{ tag: keyof typeof tagColorMap; name: string }> = [
 
 // 计算每个标签的时间总和
 const tagTimeTotal = computed(() => {
-  return currScheduleList.value.reduce(
+  return currSchedules.value.reduce(
     (acc, cur) => {
       acc[cur.tag] = (acc[cur.tag] || 0) + Number(calculateTimeDifference(cur.time))
       return acc

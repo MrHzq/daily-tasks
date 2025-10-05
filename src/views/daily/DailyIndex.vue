@@ -13,16 +13,17 @@
       :currTime="currTime"
       :dayInfo="dayInfo"
       :isHoliday="isHoliday"
-      :scheduleList="scheduleList"
+      :schedules="schedules"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
-import ScheduleIndex, { type ScheduleItem } from '@/components/schedule/ScheduleIndex.vue'
 import ChineseHolidayChecker from '@/utils/holidayChecker'
+import ScheduleIndex from '@/components/schedule/ScheduleIndex.vue'
+import { getSchedulesToLocalStorage, type Schedule } from '@/data/schedule'
 
 const holidayChecker = new ChineseHolidayChecker()
 
@@ -43,72 +44,11 @@ const currTime = ref(updateCurrTime())
 // 每秒钟更新一次当前时间
 setInterval(() => (currTime.value = updateCurrTime()), 1000)
 
-const scheduleList = ref<ScheduleItem[]>([
-  {
-    name: '睡觉、起床',
-    time: ['23:00', '08:00'],
-    tag: 'sleep',
-    belong: 'both',
-  },
-  {
-    name: '洗漱、学英语',
-    time: ['08:00', '09:25'],
-    tag: 'free',
-    belong: 'both',
-  },
-  {
-    name: '早餐、上班',
-    time: ['09:25', '12:00'],
-    tag: 'work',
-    belong: 'workday',
-  },
-  {
-    name: '早餐、??',
-    time: ['09:25', '12:00'],
-    tag: 'free',
-    belong: 'holiday',
-  },
-  {
-    name: '午饭、午休',
-    time: ['12:00', '13:30'],
-    tag: 'eat',
-    belong: 'both',
-  },
-  {
-    name: '下午工作',
-    time: ['13:30', '17:00'],
-    tag: 'work',
-    belong: 'workday',
-  },
-  {
-    name: '??',
-    time: ['13:30', '17:00'],
-    tag: 'free',
-    belong: 'holiday',
-  },
-  {
-    name: '晚餐',
-    time: ['17:00', '17:30'],
-    tag: 'eat',
-    belong: 'both',
-  },
-  {
-    name: '下午上班',
-    time: ['17:30', '18:30'],
-    tag: 'work',
-    belong: 'workday',
-  },
-  {
-    name: '阅读',
-    time: ['17:30', '18:30'],
-    tag: 'free',
-    belong: 'holiday',
-  },
-  {
-    name: ['写一篇《认知觉醒》', '推进《壹人成》进度', '健身、脚上八锦缎', '做些其他的事情……'],
-    time: ['18:30', '23:00'],
-    tag: 'free',
-    belong: 'both',
-  },
-])
+const schedules = ref<Schedule[]>([])
+
+// 初始化 日程列表 数据
+onMounted(() => {
+  const savedSchedules = getSchedulesToLocalStorage()
+  schedules.value = savedSchedules
+})
 </script>

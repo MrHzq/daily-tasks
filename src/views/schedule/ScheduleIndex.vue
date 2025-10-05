@@ -5,22 +5,22 @@
       <h2>Schedule List</h2>
       <div class="flex space-x-2">
         <button
-          @click="showDialog = true"
           class="px-3 py-1 text-white bg-green-500 rounded-md transition duration-200 hover:bg-green-600"
+          @click="openAddDialog"
         >
           Add
         </button>
 
         <button
-          @click="exportTags"
           class="px-3 py-1 text-white bg-yellow-500 rounded-md transition duration-200 hover:bg-yellow-600"
+          @click="copy(schedules)"
         >
           Export
         </button>
 
         <button
-          @click="showImportDialog = true"
           class="px-3 py-1 text-white bg-sky-500 rounded-md transition duration-200 hover:bg-sky-600"
+          @click="openImportDialog"
         >
           Import
         </button>
@@ -57,15 +57,15 @@
       </div>
     </div>
 
-    <!-- 日程列表 -->
+    <!-- 列表 -->
     <div class="flex-1">
       <template v-if="filteredSchedules.length > 0">
         <div class="grid gap-4">
           <div
             v-for="schedule in filteredSchedules"
             :key="schedule.id"
+            :class="[tagColorMap[schedule.tag]?.border]"
             class="p-2 bg-white rounded-xl border-l-4 shadow-md transition-all hover:shadow-lg"
-            :class="[schedule.tag ? tagColorMap[schedule.tag]?.border : '']"
           >
             <div class="flex flex-col gap-2 justify-between sm:flex-row sm:items-center">
               <h3 class="text-xl font-semibold">
@@ -89,9 +89,7 @@
                 <div class="flex items-center space-x-2">
                   <span
                     class="px-3 py-1 text-sm rounded-full"
-                    :class="[
-                      ((schedule.tag ? tagColorMap[schedule.tag]?.bg : '') || 'bg-gray-10') + '0',
-                    ]"
+                    :class="[(tagColorMap[schedule.tag]?.bg || 'bg-gray-10') + '0']"
                   >
                     {{ schedule.tag }}
                   </span>
@@ -122,12 +120,12 @@
       <!-- 空状态提示 -->
       <template v-else>
         <div class="flex flex-col justify-center items-center h-full text-center">
-          <h3 class="mb-2 text-xl font-medium">No Schedules Found</h3>
+          <h3 class="mb-2 text-xl font-medium">No Found</h3>
         </div>
       </template>
     </div>
 
-    <!-- 新增/编辑日程对话框 -->
+    <!-- 新增/编辑 对话框 -->
     <div
       v-if="showDialog"
       class="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50"
@@ -137,9 +135,9 @@
         class="p-6 w-full max-w-sm bg-white rounded-lg transition-all duration-300 transform"
         @click.stop
       >
-        <h2 class="mb-4 text-xl font-semibold">{{ isEditing ? 'Edit' : 'Add' }}</h2>
+        <h3 class="mb-4 text-lg font-semibold">{{ isEditing ? 'Edit' : 'Add' }}</h3>
 
-        <form @submit.prevent="saveSchedule">
+        <form @submit.prevent="saveData">
           <div class="space-y-4">
             <div>
               <label class="block mb-1 text-sm font-medium" for="name">Schedule Name</label>
@@ -147,7 +145,6 @@
                 v-model="currentSchedule.name"
                 id="name"
                 type="text"
-                required
                 class="px-4 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Schedule name"
                 autocomplete="off"
@@ -211,8 +208,8 @@
           <div class="flex justify-end mt-4 space-x-3">
             <button
               type="button"
-              @click="closeDialog"
               class="px-3 py-1 rounded-lg border border-gray-300 transition-colors hover:bg-gray-100"
+              @click="closeDialog"
             >
               Cancel
             </button>
@@ -345,12 +342,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
-import { belongList } from '@/constant'
 import { copy } from '@/utils/common'
 
 import { getTagsToLocalStorage, saveTagsToLocalStorage, tagColorMap, type Tag } from '@/data/tag'
+
+import { belongList } from '@/constant'
+
 import {
   getSchedulesToLocalStorage,
   saveSchedulesToLocalStorage,
@@ -384,22 +383,15 @@ const filterBelong = ref('')
 
 // 过滤后的日程列表
 const filteredSchedules = computed<Schedule[]>(() => {
-  return schedules.value
-    .filter((schedule) => {
-      const matchesSearch = Array.isArray(schedule.name)
-        ? schedule.name.some((name) => name.toLowerCase().includes(searchQuery.value.toLowerCase()))
-        : schedule.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-      const matchesTag = !filterTag.value || schedule.tag === filterTag.value
-      const matchesBelong = !filterBelong.value || schedule.belong === filterBelong.value
+  return schedules.value.filter((schedule) => {
+    const matchesSearch = Array.isArray(schedule.name)
+      ? schedule.name.some((name) => name.toLowerCase().includes(searchQuery.value.toLowerCase()))
+      : schedule.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const matchesTag = !filterTag.value || schedule.tag === filterTag.value
+    const matchesBelong = !filterBelong.value || schedule.belong === filterBelong.value
 
-      return matchesSearch && matchesTag && matchesBelong
-    })
-    .sort((a, b) => {
-      // 按时间排序
-      if (a.time[0] < b.time[0]) return -1
-      if (a.time[0] > b.time[0]) return 1
-      return 0
-    })
+    return matchesSearch && matchesTag && matchesBelong
+  })
 })
 
 // 对话框状态
@@ -415,17 +407,17 @@ const currentSchedule = ref<Schedule>({
 })
 
 const saveButtonDisabled = computed(() => {
-  return !(
-    currentSchedule.value.name.trim() &&
-    currentSchedule.value.time[0] &&
-    currentSchedule.value.time[1] &&
-    currentSchedule.value.tag &&
-    currentSchedule.value.belong
-  )
+  return !(Array.isArray(currentSchedule.value.name)
+    ? currentSchedule.value.name.some((name) => name.trim())
+    : currentSchedule.value.name.trim() &&
+      currentSchedule.value.time[0] &&
+      currentSchedule.value.time[1] &&
+      currentSchedule.value.tag &&
+      currentSchedule.value.belong)
 })
 
 // 打开新增对话框
-const openAddModal = () => {
+const openAddDialog = () => {
   isEditing.value = false
 
   currentSchedule.value = {
@@ -442,7 +434,9 @@ const openAddModal = () => {
 // 打开编辑对话框
 const openEditDialog = (schedule: Schedule) => {
   isEditing.value = true
+
   currentSchedule.value = { ...schedule }
+
   showDialog.value = true
 }
 
@@ -451,24 +445,24 @@ const closeDialog = () => {
   showDialog.value = false
 }
 
-// 保存日程（新增或编辑）
-const saveSchedule = () => {
+// 保存（新增或编辑）
+const saveData = () => {
   if (saveButtonDisabled.value) return
 
   if (isEditing.value) {
     // 编辑
-    const index = schedules.value.findIndex((s) => s.id === currentSchedule.value.id)
+    const index = schedules.value.findIndex((i) => i.id === currentSchedule.value.id)
     if (index !== -1) {
       schedules.value[index] = { ...currentSchedule.value }
       showNotification('更新成功', '日程已成功更新', 'success')
     }
   } else {
     // 新增
-    const newSchedule: Schedule = {
+    const newData: Schedule = {
       ...currentSchedule.value,
       id: Math.random().toString(36).substring(2),
     }
-    schedules.value.push(newSchedule)
+    schedules.value.push(newData)
     showNotification('添加成功', '新日程已成功添加', 'success')
   }
 
@@ -519,22 +513,15 @@ const showNotification = (title: string, message: string, type: 'success' | 'err
   }, 3000)
 }
 
-// 深色模式切换
-const isDarkMode = ref(false)
-
-watchEffect(() => {
-  if (isDarkMode.value) {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }
-})
-
-const exportTags = () => copy(schedules.value)
-
 // 导入弹窗状态
 const showImportDialog = ref(false)
 const importJson = ref('')
+
+// 打开导入弹窗
+const openImportDialog = () => {
+  showImportDialog.value = true
+  importJson.value = ''
+}
 
 // 关闭导入弹窗
 const closeImportDialog = () => {
@@ -559,33 +546,3 @@ const importTagsFromJson = () => {
   }
 }
 </script>
-
-<style scoped>
-/* 基础动画效果 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.slide-enter-active,
-.slide-leave-active {
-  transition:
-    transform 0.3s ease,
-    opacity 0.3s ease;
-}
-
-.slide-enter-from {
-  transform: translateY(20px);
-  opacity: 0;
-}
-
-.slide-leave-to {
-  transform: translateY(-20px);
-  opacity: 0;
-}
-</style>
