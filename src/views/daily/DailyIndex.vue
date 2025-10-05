@@ -2,9 +2,24 @@
   <div class="flex flex-col bg-gray-50 transition-colors duration-300">
     <!-- 页面头部 -->
     <header class="relative z-10 p-4 bg-white shadow-sm">
-      <div class="mx-auto max-w-7xl">
-        <h1 class="text-3xl font-bold text-center text-gray-900">{{ dayInfo.date }}日程</h1>
-        <p class="mt-2 text-center text-red-600">{{ currTime }}</p>
+      <div class="flex flex-col gap-2 items-center">
+        <h1 class="text-3xl font-bold text-gray-900">{{ dayInfo.date }}日程</h1>
+        <p class="text-red-600 r">{{ currTime }}</p>
+
+        <div>
+          <button
+            v-if="isInCanEatTime"
+            class="px-3 py-1 text-sm text-white bg-green-500 rounded-md transition duration-200 hover:bg-green-600"
+          >
+            可进食({{ canEatTime.join(' - ') }})
+          </button>
+          <button
+            v-else
+            class="px-3 py-1 text-sm text-white bg-red-500 rounded transition duration-200 hover:bg-red-600"
+          >
+            断食中({{ canNotEatTime.join(' - ') }})
+          </button>
+        </div>
       </div>
     </header>
 
@@ -18,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import ChineseHolidayChecker from '@/utils/holidayChecker'
 import ScheduleIndex from '@/components/schedule/ScheduleIndex.vue'
@@ -49,5 +64,14 @@ const schedules = ref<Schedule[]>([])
 onMounted(() => {
   const savedSchedules = getSchedulesToLocalStorage()
   schedules.value = savedSchedules
+})
+
+const canEatTime = ref(['09:30', '17:30']) // 8 小时
+const canNotEatTime = ref(['17:30', '09:30']) // 16 小时
+
+// 计算当前时间是否在可吃时间范围内
+const isInCanEatTime = computed(() => {
+  const currentTime = currTime.value
+  return canEatTime.value.some((time) => currentTime >= time)
 })
 </script>
