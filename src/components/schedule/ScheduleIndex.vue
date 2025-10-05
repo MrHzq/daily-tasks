@@ -73,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, nextTick, watch } from 'vue'
 import { tagColorMap } from '@/data/tag'
 import type { Schedule } from '@/data/schedule'
 
@@ -157,9 +157,7 @@ const scrollToElement = (index: number) => {
   }
 }
 
-onMounted(() => {
-  scrollToElement(currTimeInScheduleIndex.value)
-})
+watch(currTimeInScheduleIndex, (newVal) => nextTick(() => scrollToElement(newVal)))
 </script>
 
 <style scoped>
