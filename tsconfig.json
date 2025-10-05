@@ -1,28 +1,17 @@
 {
-  // "files": [],
-  // "references": [
-  //   {
-  //     "path": "./tsconfig.node.json",
-  //     "composite": true
-  //   },
-  //   {
-  //     "path": "./tsconfig.app.json",
-  //     "composite": true
-  //   },
-  //   {
-  //     "path": "./tsconfig.vitest.json",
-  //     "composite": true
-  //   }
-  // ],
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"] // 配置@别名指向src目录，根据你的项目结构调整
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json",
+      "composite": true
     },
-    "typeRoots": ["./node_modules/@types", "./src/types"], // 自定义类型声明目录
-    "noImplicitAny": false // 作为最后手段，关闭隐式any检查（不推荐）
-  },
-  // 确保包含了你的源代码目录
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+    {
+      "path": "./tsconfig.app.json",
+      "composite": true
+    },
+    {
+      "path": "./tsconfig.vitest.json",
+      "composite": true
+    }
+  ]
 }
