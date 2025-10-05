@@ -1,177 +1,289 @@
 <template>
-  <div class="p-2">
+  <div class="flex overflow-auto flex-col gap-2 p-2">
     <!-- 标题和新增按钮 -->
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex justify-between items-center">
       <h2>Tag List</h2>
-      <button
-        @click="showAddDialog = true"
-        class="px-3 py-1 text-white bg-green-500 rounded-md transition duration-200 hover:bg-green-600"
-      >
-        Add
-      </button>
-    </div>
+      <div class="flex space-x-2">
+        <button
+          class="px-3 py-1 text-white bg-green-500 rounded-md transition duration-200 hover:bg-green-600"
+          @click="openAddDialog"
+        >
+          Add
+        </button>
 
-    <!-- 标签列表 -->
-    <div v-if="tags.length > 0" class="space-y-4">
-      <div
-        v-for="tag in tags"
-        :key="tag.id"
-        class="flex justify-between items-center p-3 bg-gray-50 rounded-md transition duration-200 hover:bg-gray-100"
-      >
-        <span class="font-medium text-gray-800">{{ tag.name }}</span>
-        <div class="flex space-x-2">
-          <button
-            @click="handleEdit(tag)"
-            class="px-3 py-1 text-sm text-white bg-blue-500 rounded transition duration-200 hover:bg-blue-600"
-          >
-            Edit
-          </button>
-          <button
-            @click="handleDelete(tag.id)"
-            class="px-3 py-1 text-sm text-white bg-red-500 rounded transition duration-200 hover:bg-red-600"
-          >
-            Del
-          </button>
-        </div>
+        <button
+          class="px-3 py-1 text-white bg-yellow-500 rounded-md transition duration-200 hover:bg-yellow-600"
+          @click="copy(tags)"
+        >
+          Export
+        </button>
+
+        <button
+          class="px-3 py-1 text-white bg-sky-500 rounded-md transition duration-200 hover:bg-sky-600"
+          @click="openImportDialog"
+        >
+          Import
+        </button>
       </div>
     </div>
 
-    <!-- 空状态提示 -->
-    <div v-else class="py-10 text-center text-gray-500">
-      <p>No tags available. Click "Add" to create a new tag.</p>
+    <!-- 标签列表 -->
+    <div class="flex-1">
+      <template v-if="tags.length > 0">
+        <div class="flex flex-col gap-4">
+          <div
+            v-for="tag in tags"
+            :key="tag.id"
+            class="flex justify-between items-center p-3 rounded-md transition duration-200"
+            :class="[tagColorMap[tag.name]?.bg || 'bg-gray-10']"
+          >
+            <span class="font-medium text-gray-800">{{ tag.name }}</span>
+            <div class="flex space-x-2">
+              <button
+                class="px-3 py-1 text-sm text-white bg-blue-500 rounded transition duration-200 hover:bg-blue-600"
+                @click="openEditDialog(tag)"
+              >
+                Edit
+              </button>
+              <button
+                class="px-3 py-1 text-sm text-white bg-red-500 rounded transition duration-200 hover:bg-red-600"
+                @click="openDeleteDialog(tag)"
+              >
+                Del
+              </button>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <!-- 空状态提示 -->
+      <template v-else>
+        <div class="flex flex-col justify-center items-center h-full text-center">
+          <h3 class="mb-2 text-xl font-medium">No Tags Found</h3>
+          <button
+            @click="openAddDialog"
+            class="px-5 py-2 text-white bg-blue-600 rounded-lg shadow-sm transition-all hover:bg-blue-700 hover:shadow"
+          >
+            Add New
+          </button>
+        </div>
+      </template>
     </div>
 
     <!-- 新增/编辑标签对话框 -->
     <div
       v-if="showDialog"
-      class="flex fixed inset-0 z-50 justify-center items-center p-4 bg-black bg-opacity-50"
+      class="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50"
+      @click="closeDialog"
     >
-      <div class="p-6 w-full max-w-sm bg-white rounded-lg transition-all duration-300 transform">
-        <h3 class="mb-4 text-lg font-semibold">{{ isEditing ? 'Edit Tag' : 'Add Tag' }}</h3>
+      <div
+        class="p-6 w-full max-w-sm bg-white rounded-lg transition-all duration-300 transform"
+        @click.stop
+      >
+        <h3 class="mb-4 text-lg font-semibold">{{ isEditing ? 'Edit' : 'Add' }}</h3>
 
-        <div class="mb-4">
-          <label for="tagName" class="block mb-1 text-sm font-medium text-gray-700">Tag Name</label>
-          <input
-            v-model="currentTagName"
-            id="tagName"
-            type="text"
-            class="px-3 py-2 w-full rounded-md border border-gray-300 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Enter tag name"
-            @keyup.enter="saveTag"
-          />
-        </div>
+        <form @submit.prevent="saveTag">
+          <div class="space-y-4">
+            <div>
+              <label class="block mb-1 text-sm font-medium" for="tagName">Tag Name</label>
+              <input
+                v-model="currentTag.name"
+                id="tagName"
+                type="text"
+                class="px-4 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Tag name"
+                autocomplete="off"
+                autofocus
+              />
+            </div>
+          </div>
 
-        <div class="flex justify-end space-x-3">
-          <button
-            @click="closeDialog"
-            class="px-3 py-1 rounded-md border border-gray-300 transition duration-200 hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            @click="saveTag"
-            :disabled="!currentTagName.trim()"
-            class="px-3 py-1 text-white bg-blue-500 rounded-md transition duration-200 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Save
-          </button>
-        </div>
+          <div class="flex justify-end mt-4 space-x-3">
+            <button
+              type="button"
+              class="px-3 py-1 rounded-lg border border-gray-300 transition-colors hover:bg-gray-100"
+              @click="closeDialog"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              :disabled="saveButtonDisabled"
+              class="px-3 py-1 text-white bg-sky-500 rounded-md transition duration-200 hover:bg-sky-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 导入弹窗 -->
+    <div
+      v-if="showImportDialog"
+      class="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50"
+      @click="closeImportDialog"
+    >
+      <div
+        class="p-6 w-full max-w-sm bg-white rounded-lg transition-all duration-300 transform"
+        @click.stop
+      >
+        <h3 class="mb-4 text-lg font-semibold">Import Tags</h3>
+
+        <form @submit.prevent="importTagsFromJson">
+          <div class="space-y-4">
+            <div>
+              <label class="block mb-1 text-sm font-medium" for="importJson">Tags Data</label>
+              <textarea
+                v-model="importJson"
+                id="importJson"
+                rows="4"
+                class="px-4 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Paste data here"
+                autocomplete="off"
+                autofocus
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="flex justify-end mt-4 space-x-3">
+            <button
+              type="button"
+              class="px-3 py-1 rounded-md border border-gray-300 transition duration-200 hover:bg-gray-50"
+              @click="closeImportDialog"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              :disabled="!importJson.trim()"
+              class="px-3 py-1 text-white bg-sky-500 rounded-md transition duration-200 hover:bg-sky-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Import
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+<script lang="ts"></script>
 
-// 定义标签类型
-interface Tag {
-  id: string
-  name: string
-}
+<script setup lang="ts">
+import { ref, onMounted, computed } from 'vue'
+
+import { copy } from '@/utils/common'
+
+import { getTagsToLocalStorage, saveTagsToLocalStorage, tagColorMap, type Tag } from '@/data/tag'
 
 // 标签列表
 const tags = ref<Tag[]>([])
 
+// 初始化 标签列表 数据
+onMounted(() => {
+  const savedTags = getTagsToLocalStorage()
+  tags.value = savedTags
+  saveTagsToLocalStorage(tags.value)
+})
+
 // 对话框状态
 const showDialog = ref(false)
-const showAddDialog = ref(false)
 const isEditing = ref(false)
-const currentTagId = ref('')
-const currentTagName = ref('')
 
-// 初始化数据
-onMounted(() => {
-  // 实际项目中这里可能是从API获取数据
-  const savedTags = localStorage.getItem('tags')
-  if (savedTags) {
-    tags.value = JSON.parse(savedTags)
-  } else {
-    // 初始示例数据
-    tags.value = []
-    saveTagsToLocalStorage()
-  }
+const currentTag = ref<Tag>({
+  id: '',
+  name: '',
 })
 
-// 保存标签到本地存储
-const saveTagsToLocalStorage = () => {
-  localStorage.setItem('tags', JSON.stringify(tags.value))
-}
+const saveButtonDisabled = computed(() => !currentTag.value.name.trim())
 
 // 打开新增对话框
-watch(showAddDialog, (newVal) => {
-  if (newVal) {
-    isEditing.value = false
-    currentTagName.value = ''
-    showDialog.value = true
+const openAddDialog = () => {
+  isEditing.value = false
+
+  currentTag.value = {
+    id: '',
+    name: '',
   }
-})
+
+  showDialog.value = true
+}
 
 // 打开编辑对话框
-const handleEdit = (tag: Tag) => {
+const openEditDialog = (tag: Tag) => {
   isEditing.value = true
-  currentTagId.value = tag.id
-  currentTagName.value = tag.name
+
+  currentTag.value = { ...tag }
+
   showDialog.value = true
 }
 
 // 关闭对话框
 const closeDialog = () => {
   showDialog.value = false
-  showAddDialog.value = false
-  currentTagName.value = ''
-  currentTagId.value = ''
 }
 
 // 保存标签（新增或编辑）
 const saveTag = () => {
-  const tagName = currentTagName.value.trim()
-  if (!tagName) return
+  if (saveButtonDisabled.value) return
 
   if (isEditing.value) {
-    // 编辑标签
-    const index = tags.value.findIndex((t) => t.id === currentTagId.value)
+    // 编辑
+    const index = tags.value.findIndex((t) => t.id === currentTag.value.id)
     if (index !== -1) {
-      if (tags.value[index]) tags.value[index].name = tagName
+      tags.value[index] = { ...currentTag.value }
     }
   } else {
-    // 新增标签
+    // 新增
     const newTag: Tag = {
+      ...currentTag.value,
       id: Date.now().toString(),
-      name: tagName,
     }
     tags.value.push(newTag)
   }
 
-  saveTagsToLocalStorage()
+  saveTagsToLocalStorage(tags.value)
   closeDialog()
 }
 
 // 删除标签
-const handleDelete = (id: string) => {
-  if (confirm('确定要删除这个标签吗？')) {
-    tags.value = tags.value.filter((tag) => tag.id !== id)
-    saveTagsToLocalStorage()
+const openDeleteDialog = (tag: Tag) => {
+  if (confirm(`Delete this tag: ${tag.name}?`)) {
+    tags.value = tags.value.filter((t) => t.id !== tag.id)
+    saveTagsToLocalStorage(tags.value)
+  }
+}
+
+// 导入弹窗状态
+const showImportDialog = ref(false)
+const importJson = ref('')
+
+// 打开导入弹窗
+const openImportDialog = () => {
+  showImportDialog.value = true
+  importJson.value = ''
+}
+
+// 关闭导入弹窗
+const closeImportDialog = () => {
+  showImportDialog.value = false
+  importJson.value = ''
+}
+
+// 从JSON导入标签
+const importTagsFromJson = () => {
+  try {
+    const importedTags = JSON.parse(importJson.value)
+    if (Array.isArray(importedTags)) {
+      tags.value = importedTags
+      saveTagsToLocalStorage(tags.value)
+      closeImportDialog()
+    } else {
+      alert('Invalid JSON Array.')
+    }
+  } catch (error) {
+    alert('Invalid JSON Format.')
   }
 }
 </script>

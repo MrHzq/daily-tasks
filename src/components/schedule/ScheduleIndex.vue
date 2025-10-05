@@ -15,7 +15,7 @@
           <div v-for="item in tagList" :key="item.tag" class="flex justify-center items-center">
             <span
               class="inline-block mr-2 w-3 h-3 rounded-full"
-              :class="[(tagColorMap[item.tag]?.bg || 'bg-gray-100') + '0']"
+              :class="[(tagColorMap[item.tag]?.bg || 'bg-gray-10') + '0']"
             ></span>
             <span :class="[tagColorMap[item.tag]?.text || 'text-gray-500']">{{ item.name }}:</span>
             <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">{{
@@ -83,6 +83,7 @@ export interface ScheduleItem {
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
+import { tagColorMap } from '@/data/tag'
 
 const props = defineProps<{
   currTime: string
@@ -135,14 +136,6 @@ const minuteFormat = (minute: number) => {
 
   // 格式化结果
   return `${hours}小时` + (minutes ? `${minutes}分钟` : '')
-}
-
-// 标签颜色映射
-const tagColorMap: Record<string, { bg: string; text: string }> = {
-  sleep: { bg: 'bg-purple-50', text: 'text-purple-800' },
-  work: { bg: 'bg-amber-50', text: 'text-amber-800' },
-  eat: { bg: 'bg-blue-50', text: 'text-blue-800' },
-  free: { bg: 'bg-green-50', text: 'text-green-800' },
 }
 
 // 标签列表
