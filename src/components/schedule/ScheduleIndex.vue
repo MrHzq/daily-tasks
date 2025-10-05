@@ -1,24 +1,24 @@
 <template>
-  <div class="box-border overflow-auto relative flex-1 p-4 mx-auto w-full">
+  <div class="box-border overflow-auto relative flex-1 p-2 mx-auto w-full">
     <!-- 日程表容器 -->
     <div class="overflow-hidden bg-white rounded-lg shadow-md">
       <!-- 日程表标题行 -->
       <div
-        class="px-6 py-4 text-center border-b border-gray-200"
+        class="px-6 py-2 text-center border-b border-gray-200"
         @click="scrollToElement(currTimeInScheduleIndex)"
       >
         <h2 class="text-xl font-semibold text-gray-900">
           今天为{{ isHoliday ? '休息日' : '工作日' }}
           {{ dayInfo.name === '工作日' ? '' : '- ' + dayInfo.name }}
         </h2>
-        <div class="grid grid-cols-2 gap-2 mt-2 text-sm xm:grid-cols-4">
+        <div class="grid grid-cols-2 gap-2 mt-2 text-sm xm:grid-cols-2">
           <div v-for="item in tagList" :key="item.tag" class="flex justify-center items-center">
             <span
-              class="inline-block mr-2 w-3 h-3 rounded-full"
+              class="inline-block mr-1 w-3 h-3 rounded-full"
               :class="[(tagColorMap[item.tag]?.bg || 'bg-gray-10') + '0']"
             ></span>
             <span :class="[tagColorMap[item.tag]?.text || 'text-gray-500']">{{ item.name }}:</span>
-            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">{{
+            <span class="text-sm text-gray-500 dark:text-gray-400 w-[50px]">{{
               minuteFormat(tagTimeTotal[item.tag] || 0)
             }}</span>
           </div>
@@ -31,9 +31,9 @@
           <div
             :id="`${index}`"
             :class="[index === currTimeInScheduleIndex ? 'bg-sky-500 text-white' : '']"
-            class="p-4 border-b border-gray-200 dark:border-gray-700"
+            class="p-2 border-b border-gray-200 dark:border-gray-700"
           >
-            <div class="p-4 rounded-lg" :class="[tagColorMap[item.tag]?.bg || 'bg-gray-50']">
+            <div class="p-2 rounded-lg" :class="[tagColorMap[item.tag]?.bg || 'bg-gray-50']">
               <div class="font-medium" :class="[tagColorMap[item.tag]?.text || 'text-gray-800']">
                 {{ item.time.join('~') }}
               </div>

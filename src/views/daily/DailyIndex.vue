@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col bg-gray-50 transition-colors duration-300">
     <!-- 页面头部 -->
-    <header class="relative z-10 p-4 bg-white shadow-sm">
+    <header class="relative z-10 p-2 bg-white shadow-sm">
       <div class="flex flex-col gap-2 items-center">
         <h1 class="text-3xl font-bold text-gray-900">{{ dayInfo.date }}日程</h1>
         <p class="text-red-600 r">{{ currTime }}</p>
