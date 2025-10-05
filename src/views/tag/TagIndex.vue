@@ -60,12 +60,6 @@
       <template v-else>
         <div class="flex flex-col justify-center items-center h-full text-center">
           <h3 class="mb-2 text-xl font-medium">No Tags Found</h3>
-          <button
-            @click="openAddDialog"
-            class="px-5 py-2 text-white bg-blue-600 rounded-lg shadow-sm transition-all hover:bg-blue-700 hover:shadow"
-          >
-            Add New
-          </button>
         </div>
       </template>
     </div>
@@ -274,15 +268,16 @@ const closeImportDialog = () => {
 // 从JSON导入标签
 const importTagsFromJson = () => {
   try {
-    const importedTags = JSON.parse(importJson.value)
-    if (Array.isArray(importedTags)) {
-      tags.value = importedTags
+    const importedData = JSON.parse(importJson.value)
+    if (Array.isArray(importedData)) {
+      tags.value = importedData
       saveTagsToLocalStorage(tags.value)
       closeImportDialog()
     } else {
       alert('Invalid JSON Array.')
     }
   } catch (error) {
+    console.log('[ error ] >', error)
     alert('Invalid JSON Format.')
   }
 }
