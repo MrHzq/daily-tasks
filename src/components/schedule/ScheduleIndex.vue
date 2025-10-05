@@ -58,14 +58,14 @@
 
     <!-- 悬浮定位按钮 -->
     <div
-      class="bottom-[40%] right-2 fixed w-10 h-10 translate-y-1/2 cursor-pointer"
+      class="bottom-[40%] right-2 fixed w-8 h-8 translate-y-1/2 cursor-pointer"
       @click="scrollToElement(currTimeInScheduleIndex)"
     >
       <div
         class="flex justify-center items-center w-full h-full bg-green-500 rounded-full shadow-lg"
       >
-        <div class="flex justify-center items-center w-7 h-7 bg-white rounded-full">
-          <div class="w-4 h-4 bg-green-500 rounded-full"></div>
+        <div class="flex justify-center items-center w-6 h-6 bg-white rounded-full">
+          <div class="w-3 h-3 bg-green-500 rounded-full"></div>
         </div>
       </div>
     </div>
