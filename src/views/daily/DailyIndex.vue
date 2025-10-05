@@ -4,7 +4,6 @@
     <header class="relative z-10 p-4 bg-white shadow-sm">
       <div class="mx-auto max-w-7xl">
         <h1 class="text-3xl font-bold text-center text-gray-900">{{ dayInfo.date }}日程</h1>
-        <p class="mt-2 text-center text-gray-600">管理您的工作与生活时间</p>
         <p class="mt-2 text-center text-red-600">{{ currTime }}</p>
       </div>
     </header>

@@ -58,7 +58,7 @@
 
     <!-- 悬浮定位按钮 -->
     <div
-      class="bottom-[50%] right-2 fixed w-10 h-10 translate-y-1/2 cursor-pointer"
+      class="bottom-[40%] right-2 fixed w-10 h-10 translate-y-1/2 cursor-pointer"
       @click="scrollToElement(currTimeInScheduleIndex)"
     >
       <div
