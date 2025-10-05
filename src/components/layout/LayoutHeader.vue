@@ -1,6 +1,6 @@
 <template>
   <header
-    class="flex flex-none justify-between items-center px-4 h-[56px] w-full border-b border-gray-200"
+    class="flex flex-none justify-between items-center px-2 h-[56px] w-full border-b border-gray-200"
   >
     <div class="left">
       <div class="flex items-center cursor-pointer" @click="handleLogoClick">

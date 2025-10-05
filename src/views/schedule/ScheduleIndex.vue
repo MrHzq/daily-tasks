@@ -28,7 +28,7 @@
     </div>
 
     <!-- 筛选和搜索 -->
-    <div class="flex flex-col gap-4 sm:flex-row">
+    <div class="flex flex-col gap-2 sm:flex-row">
       <div class="relative flex-1">
         <input
           v-model="searchQuery"
@@ -60,7 +60,7 @@
     <!-- 列表 -->
     <div class="flex-1">
       <template v-if="filteredSchedules.length > 0">
-        <div class="grid gap-4">
+        <div class="grid gap-2">
           <div
             v-for="schedule in filteredSchedules"
             :key="schedule.id"
@@ -128,31 +128,31 @@
     <!-- 新增/编辑 对话框 -->
     <div
       v-if="showDialog"
-      class="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50"
+      class="flex fixed inset-0 z-50 justify-center items-center p-2 backdrop-blur-sm bg-black/50"
       @click="closeDialog"
     >
       <div
-        class="p-6 w-full max-w-sm bg-white rounded-lg transition-all duration-300 transform"
+        class="p-4 w-full max-w-sm bg-white rounded-lg transition-all duration-300 transform"
         @click.stop
       >
-        <h3 class="mb-4 text-lg font-semibold">{{ isEditing ? 'Edit' : 'Add' }}</h3>
+        <h3 class="mb-2 text-lg font-semibold">{{ isEditing ? 'Edit' : 'Add' }}</h3>
 
         <form @submit.prevent="saveData">
-          <div class="space-y-4">
+          <div class="space-y-2">
             <div>
               <label class="block mb-1 text-sm font-medium" for="name">Schedule Name</label>
               <input
                 v-model="currentSchedule.name"
                 id="name"
                 type="text"
-                class="px-4 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="px-2 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Schedule name"
                 autocomplete="off"
                 autofocus
               />
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-2">
               <div>
                 <label class="block mb-1 text-sm font-medium" for="startTime">Start Time</label>
                 <input
@@ -160,7 +160,7 @@
                   v-model="currentSchedule.time[0]"
                   type="time"
                   required
-                  class="px-4 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="px-2 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -170,19 +170,19 @@
                   v-model="currentSchedule.time[1]"
                   type="time"
                   required
-                  class="px-4 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="px-2 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-2">
               <div>
                 <label class="block mb-1 text-sm font-medium" for="tag">Tag</label>
                 <select
                   v-model="currentSchedule.tag"
                   id="tag"
                   required
-                  class="px-4 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="px-2 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option v-for="tag in tags" :key="tag.id" :value="tag.name">
                     {{ tag.name }}
@@ -195,7 +195,7 @@
                   v-model="currentSchedule.belong"
                   id="belong"
                   required
-                  class="px-4 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="px-2 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option v-for="belong in belongList" :key="belong" :value="belong">
                     {{ belong }}
@@ -205,7 +205,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end mt-4 space-x-3">
+          <div class="flex justify-end mt-2 space-x-2">
             <button
               type="button"
               class="px-3 py-1 rounded-lg border border-gray-300 transition-colors hover:bg-gray-100"
@@ -228,21 +228,21 @@
     <!-- 确认删除对话框 -->
     <div
       v-if="showDeleteDialog"
-      class="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50"
+      class="flex fixed inset-0 z-50 justify-center items-center p-2 backdrop-blur-sm bg-black/50"
       @click="closeDeleteDialog"
     >
       <div
-        class="p-6 w-full max-w-md bg-white rounded-xl shadow-xl transition-all transform dark:bg-gray-800"
+        class="p-4 w-full max-w-md bg-white rounded-xl shadow-xl transition-all transform dark:bg-gray-800"
         @click.stop
       >
         <div class="text-center">
-          <h3 class="mb-4 text-lg font-semibold">Confirm Delete</h3>
+          <h3 class="mb-2 text-lg font-semibold">Confirm Delete</h3>
           <p class="text-gray-500 dark:text-gray-400">
             Delete this schedule: {{ deleteSchedule?.name }}?
           </p>
         </div>
 
-        <div class="flex justify-center mt-4 space-x-3">
+        <div class="flex justify-center mt-2 space-x-2">
           <button
             class="px-3 py-1 rounded-lg border border-gray-300 transition-colors hover:bg-gray-100"
             @click="closeDeleteDialog"
@@ -262,24 +262,24 @@
     <!-- 导入弹窗 -->
     <div
       v-if="showImportDialog"
-      class="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50"
+      class="flex fixed inset-0 z-50 justify-center items-center p-2 backdrop-blur-sm bg-black/50"
       @click="closeImportDialog"
     >
       <div
-        class="p-6 w-full max-w-sm bg-white rounded-lg transition-all duration-300 transform"
+        class="p-4 w-full max-w-sm bg-white rounded-lg transition-all duration-300 transform"
         @click.stop
       >
-        <h3 class="mb-4 text-lg font-semibold">Import Schedule</h3>
+        <h3 class="mb-2 text-lg font-semibold">Import Schedule</h3>
 
         <form @submit.prevent="importTagsFromJson">
-          <div class="space-y-4">
+          <div class="space-y-2">
             <div>
               <label class="block mb-1 text-sm font-medium" for="importJson">Schedule Data</label>
               <textarea
                 v-model="importJson"
                 id="importJson"
                 rows="4"
-                class="px-4 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="px-2 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Paste data here"
                 autocomplete="off"
                 autofocus
@@ -287,7 +287,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end mt-4 space-x-3">
+          <div class="flex justify-end mt-2 space-x-2">
             <button
               type="button"
               class="px-3 py-1 rounded-md border border-gray-300 transition duration-200 hover:bg-gray-50"
@@ -310,7 +310,7 @@
     <!-- 通知提示 -->
     <div
       v-if="notification.message"
-      class="fixed right-4 bottom-4 p-4 max-w-sm rounded-lg shadow-lg opacity-100 transition-all duration-300 transform translate-y-0"
+      class="fixed top-[50%] right-2 p-2 max-w-sm rounded-lg shadow-lg opacity-100 transition-all duration-300 transform translate-y-0"
       :class="
         notification.type === 'success'
           ? 'bg-green-50 text-green-800 dark:bg-green-900/90 dark:text-green-100'

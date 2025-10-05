@@ -30,7 +30,7 @@
     <!-- 列表 -->
     <div class="flex-1">
       <template v-if="tags.length > 0">
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
           <div
             v-for="tag in tags"
             :key="tag.id"
@@ -67,24 +67,24 @@
     <!-- 新增/编辑 对话框 -->
     <div
       v-if="showDialog"
-      class="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50"
+      class="flex fixed inset-0 z-50 justify-center items-center p-2 backdrop-blur-sm bg-black/50"
       @click="closeDialog"
     >
       <div
-        class="p-6 w-full max-w-sm bg-white rounded-lg transition-all duration-300 transform"
+        class="p-4 w-full max-w-sm bg-white rounded-lg transition-all duration-300 transform"
         @click.stop
       >
-        <h3 class="mb-4 text-lg font-semibold">{{ isEditing ? 'Edit' : 'Add' }}</h3>
+        <h3 class="mb-2 text-lg font-semibold">{{ isEditing ? 'Edit' : 'Add' }}</h3>
 
         <form @submit.prevent="saveData">
-          <div class="space-y-4">
+          <div class="space-y-2">
             <div>
               <label class="block mb-1 text-sm font-medium" for="name">Tag Name</label>
               <input
                 v-model="currentTag.name"
                 id="name"
                 type="text"
-                class="px-4 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="px-2 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Tag name"
                 autocomplete="off"
                 autofocus
@@ -92,7 +92,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end mt-4 space-x-3">
+          <div class="flex justify-end mt-2 space-x-2">
             <button
               type="button"
               class="px-3 py-1 rounded-lg border border-gray-300 transition-colors hover:bg-gray-100"
@@ -115,24 +115,24 @@
     <!-- 导入弹窗 -->
     <div
       v-if="showImportDialog"
-      class="flex fixed inset-0 z-50 justify-center items-center p-4 backdrop-blur-sm bg-black/50"
+      class="flex fixed inset-0 z-50 justify-center items-center p-2 backdrop-blur-sm bg-black/50"
       @click="closeImportDialog"
     >
       <div
-        class="p-6 w-full max-w-sm bg-white rounded-lg transition-all duration-300 transform"
+        class="p-4 w-full max-w-sm bg-white rounded-lg transition-all duration-300 transform"
         @click.stop
       >
-        <h3 class="mb-4 text-lg font-semibold">Import Tags</h3>
+        <h3 class="mb-2 text-lg font-semibold">Import Tags</h3>
 
         <form @submit.prevent="importTagsFromJson">
-          <div class="space-y-4">
+          <div class="space-y-2">
             <div>
               <label class="block mb-1 text-sm font-medium" for="importJson">Tags Data</label>
               <textarea
                 v-model="importJson"
                 id="importJson"
                 rows="4"
-                class="px-4 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="px-2 py-2 w-full bg-white rounded-lg border border-gray-300 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Paste data here"
                 autocomplete="off"
                 autofocus
@@ -140,7 +140,7 @@
             </div>
           </div>
 
-          <div class="flex justify-end mt-4 space-x-3">
+          <div class="flex justify-end mt-2 space-x-2">
             <button
               type="button"
               class="px-3 py-1 rounded-md border border-gray-300 transition duration-200 hover:bg-gray-50"
@@ -161,8 +161,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts"></script>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
