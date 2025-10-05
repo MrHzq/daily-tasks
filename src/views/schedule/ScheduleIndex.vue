@@ -68,7 +68,7 @@
             class="p-2 bg-white rounded-xl border-l-4 shadow-md transition-all hover:shadow-lg"
           >
             <div class="flex flex-col gap-2 justify-between sm:flex-row sm:items-center">
-              <h3 class="text-xl font-semibold">
+              <h4 class="font-semibold">
                 <div
                   v-for="(name, index) in Array.isArray(schedule.name)
                     ? schedule.name
@@ -80,7 +80,7 @@
                   </template>
                   {{ name }}
                 </div>
-              </h3>
+              </h4>
               <div class="flex items-center text-gray-500 dark:text-gray-400">
                 <span> {{ schedule.time.join('~') }}</span>
               </div>
